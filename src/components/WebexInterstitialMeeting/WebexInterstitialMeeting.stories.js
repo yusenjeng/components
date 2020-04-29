@@ -10,8 +10,6 @@ const stories = storiesOf('Webex Interstitial Meeting', module);
 const webexAdapter = new WebexJSONAdapter(jsonData);
 const wrapperStyle = {height: '500px', width: '800px', border: '1px solid black'};
 
-console.log('hello');
-
 stories.add('loading', () => (
   <div style={wrapperStyle}>
     <WebexDataProvider adapter={webexAdapter}>
