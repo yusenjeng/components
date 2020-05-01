@@ -49,3 +49,20 @@ stories.add('disabled icon', () => (
     </WebexMeetingControls>
   </WebexDataProvider>
 ));
+
+stories.add('disabled icon', () => (
+  <WebexDataProvider adapter={webexAdapter}>
+    <WebexMeetingControls meetingID="mutedLocalAudio">
+      <WebexMeetingControl type="disabled-mute-audio" />
+    </WebexMeetingControls>
+  </WebexDataProvider>
+));
+
+stories.add('share icon', () => (
+  <WebexDataProvider adapter={webexAdapter}>
+    <WebexMeetingControls meetingID="remoteMedia">
+      <WebexMeetingControl type="mute-audio" />
+      {/* <WebexMeetingControl type="local-share" /> */}
+    </WebexMeetingControls>
+  </WebexDataProvider>
+));
