@@ -5,6 +5,8 @@ import {MeetingsAdapter, MeetingControlState} from '@webex/component-adapter-int
 // Defined meeting controls in Meetings JSON Adapter
 export const MUTE_AUDIO_CONTROL = 'mute-audio';
 export const MUTE_VIDEO_CONTROL = 'mute-video';
+export const START_SHARE_CONTROL = 'start-share';
+export const STOP_SHARE_CONTROL = 'stop-share';
 export const JOIN_CONTROL = 'join-meeting';
 export const LEAVE_CONTROL = 'leave-meeting';
 export const DISABLED_MUTE_AUDIO_CONTROL = 'disabled-mute-audio';
@@ -59,6 +61,12 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       ID: MUTE_VIDEO_CONTROL,
       action: this.toggleMuteVideo.bind(this),
       display: this.muteVideoControl.bind(this),
+    };
+
+    this.meetingControls[START_SHARE_CONTROL] = {
+      ID: START_SHARE_CONTROL,
+      action: this.handleLocalShare.bind(this),
+      display: this.shareControl.bind(this),
     };
 
     this.meetingControls[JOIN_CONTROL] = {
@@ -157,6 +165,17 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       /* eslint-enable no-confusing-arrow */
     );
 
+    const shareEvents$ = fromEvent(document, START_SHARE_CONTROL).pipe(
+      filter((event) => event.detail.ID === ID),
+      map((event) => {
+        const meeting = this.datasource[ID];
+
+        meeting.remoteShare = meeting.localShare;
+
+        return event;
+      })
+    );
+
     // Send updates on the meeting when an action is triggered
     const audioEvents$ = fromEvent(document, MUTE_AUDIO_CONTROL);
     const videoEvents$ = fromEvent(document, MUTE_VIDEO_CONTROL);
@@ -165,7 +184,7 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       tap(() => end$.next(`Meeting "${ID}" has completed.`))
     );
 
-    const events$ = merge(audioEvents$, videoEvents$, joinEvents$, leaveEvents$).pipe(
+    const events$ = merge(audioEvents$, videoEvents$, joinEvents$, leaveEvents$, shareEvents$).pipe(
       filter((event) => event.detail.ID === ID),
       // Make a copy of the meeting to treat it as if were immutable
       map((event) => ({...event.detail}))
@@ -205,6 +224,24 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
     }
 
     return stream;
+  }
+
+  /**
+   * Returns a MediaStream object obtained from user local sharing.
+   * @param {MediaStreamConstraints} displayMediaOptions  an object specifying the types of the media to request
+   * @returns {MediaStream}
+   */
+  async getSharingStream(displayMediaOptions) {
+    let captureStream = null;
+
+    try {
+      captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+    } catch (reason) {
+      // eslint-disable-next-line no-console
+      console.error('Meetings JSON adapter can not display the local user sharing stream', reason);
+    }
+
+    return captureStream;
   }
 
   /**
@@ -436,6 +473,89 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
 
       observer.complete();
     });
+  }
+
+  /**
+   * Returns an observable that emits the display data of a disabled meeting control.
+   *
+   * @param {string} ID ID of the meeting for which to update display
+   * @memberof MeetingJSONAdapter
+   * @private
+   */
+  async handleLocalShare(ID) {
+    const meeting = this.datasource[ID];
+    const constraints = {video: true};
+
+    if (meeting.localShare) {
+      meeting.localShare.getTracks()[0].stop();
+      meeting.localShare = null;
+    } else {
+      meeting.localShare = await this.getSharingStream(constraints);
+
+      if (meeting.localShare) {
+        meeting.localShare.getVideoTracks()[0].onended = () => {
+          // Handle browser's built-in stop Button
+          meeting.localShare = null;
+          document.dispatchEvent(new CustomEvent(START_SHARE_CONTROL, {detail: meeting}));
+        };
+      }
+    }
+
+    document.dispatchEvent(new CustomEvent(START_SHARE_CONTROL, {detail: meeting}));
+  }
+
+  /**
+   * Returns an observable that emits the display data of a meeting control.
+   *
+   * @param {string} ID ID of the meeting for which to update display
+   * @returns {Observable.<MeetingControlDisplay>}
+   * @memberof MeetingJSONAdapter
+   * @private
+   */
+  shareControl(ID) {
+    const inactive = {
+      ID: START_SHARE_CONTROL,
+      icon: 'share',
+      tooltip: 'Start Sharing',
+      state: MeetingControlState.INACTIVE,
+    };
+    const active = {
+      ID: START_SHARE_CONTROL,
+      icon: 'share',
+      tooltip: 'Stop Sharing',
+      state: MeetingControlState.ACTIVE,
+    };
+
+    const default$ = Observable.create((observer) => {
+      const meeting = this.datasource[ID];
+
+      if (meeting) {
+        observer.next(meeting.localShare ? active : inactive);
+      } else {
+        observer.error(new Error(`Could not find meeting with ID "${ID}"`));
+      }
+
+      observer.complete();
+    });
+
+    const muteEvent$ = fromEvent(document, START_SHARE_CONTROL).pipe(
+      filter((event) => event.detail.ID === ID),
+      map((event) => (event.detail.localShare ? active : inactive))
+    );
+
+    return concat(default$, muteEvent$);
+
+    // return Observable.create((observer) => {
+    //   observer.next({
+    //     ID: START_SHARE_CONTROL,
+    //     icon: 'share',
+    //     text: 'Start Sharing Control',
+    //     tooltip: 'Start Sharing',
+    //     state: MeetingControlState.INACTIVE,
+    //   });
+
+    //   observer.complete();
+    // });
   }
 
   /**

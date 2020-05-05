@@ -17,13 +17,18 @@ import './WebexRemoteMedia.scss';
  * NOTE: waiting for the UX for a design on what to display if there is no remote video
  */
 export default function WebexRemoteMedia({className, meetingID}) {
-  const {remoteAudio, remoteVideo, error} = useMeeting(meetingID);
+  const {remoteAudio, remoteVideo, remoteShare, error} = useMeeting(meetingID);
   const audioRef = useStream(remoteAudio);
   const videoRef = useStream(remoteVideo);
-  const hasMedia = !!(remoteAudio || remoteVideo);
+  const shareRef = useStream(remoteShare);
+  const hasMedia = !!(remoteAudio || remoteVideo || remoteShare);
   const mainClasses = {
     [`${WEBEX_COMPONENTS_CLASS_PREFIX}-remote-media`]: true,
     [className]: !!className,
+  };
+
+  const remoteVideoClasses = {
+    'bottom-left-cornor': !!remoteShare,
   };
 
   return (
@@ -40,7 +45,13 @@ export default function WebexRemoteMedia({className, meetingID}) {
               <div>Connecting</div>
             </Badge>
           ) : null}
-          {remoteVideo ? <video ref={videoRef} playsInline autoPlay /> : null}
+
+          {remoteShare ? <video ref={shareRef} playsInline autoPlay /> : null}
+
+          {remoteVideo ? (
+            <video ref={videoRef} playsInline autoPlay className={classNames(remoteVideoClasses)} />
+          ) : null}
+
           {remoteAudio ? <audio ref={audioRef} autoPlay /> : null}
         </React.Fragment>
       )}

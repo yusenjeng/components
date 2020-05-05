@@ -12,7 +12,7 @@ export default function useStream(stream) {
   useEffect(() => {
     const mediaElement = streamRef.current;
 
-    if (stream instanceof MediaStream) {
+    if (!!mediaElement && stream instanceof MediaStream) {
       mediaElement.srcObject = stream;
     }
   }, [stream]);

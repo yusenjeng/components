@@ -26,5 +26,20 @@
   video {
     height: 100%;
     width: 100%;
+
+    &.hide {
+      visibility: hidden;
+    }
+  
+    &.bottom-left-cornor {
+      position: absolute;
+      bottom: 120px;
+      left: 20px;
+      width: 150px;
+      height: auto;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: 0.7s ease-in;
+    }
   }
 }

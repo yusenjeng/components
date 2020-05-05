@@ -16,11 +16,33 @@ stories.add('default', () => (
 ));
 
 stories.add('custom controls', () => {
-  const controls = (isActive) => (isActive ? ['leave-meeting'] : ['join-meeting']);
+  const controls = (isActive) => {
+    if (isActive) {
+      return ['mute-audio', 'mute-video', 'leave-meeting'];
+    }
+
+    return ['join-meeting'];
+  };
 
   return (
     <WebexDataProvider adapter={webexAdapter}>
       <WebexMeeting meetingDestination="localMedia" controls={controls} />
+    </WebexDataProvider>
+  );
+});
+
+stories.add('custom controls with sharing', () => {
+  const controls = (isActive) => {
+    if (isActive) {
+      return ['mute-audio', 'mute-video', 'start-share', 'leave-meeting'];
+    }
+
+    return ['join-meeting'];
+  };
+
+  return (
+    <WebexDataProvider adapter={webexAdapter}>
+      <WebexMeeting meetingDestination="localMediaSender" controls={controls} />
     </WebexDataProvider>
   );
 });

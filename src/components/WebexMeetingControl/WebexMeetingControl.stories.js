@@ -58,11 +58,12 @@ stories.add('disabled icon', () => (
   </WebexDataProvider>
 ));
 
-stories.add('share icon', () => (
+stories.add('multiple icons', () => (
   <WebexDataProvider adapter={webexAdapter}>
-    <WebexMeetingControls meetingID="remoteMedia">
+    <WebexMeetingControls meetingID="localShare">
       <WebexMeetingControl type="mute-audio" />
-      {/* <WebexMeetingControl type="local-share" /> */}
+      <WebexMeetingControl type="mute-video" />
+      <WebexMeetingControl type="start-share" />
     </WebexMeetingControls>
   </WebexDataProvider>
 ));
