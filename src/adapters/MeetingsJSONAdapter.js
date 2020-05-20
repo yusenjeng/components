@@ -5,8 +5,7 @@ import {MeetingsAdapter, MeetingControlState} from '@webex/component-adapter-int
 // Defined meeting controls in Meetings JSON Adapter
 export const MUTE_AUDIO_CONTROL = 'mute-audio';
 export const MUTE_VIDEO_CONTROL = 'mute-video';
-export const START_SHARE_CONTROL = 'start-share';
-export const STOP_SHARE_CONTROL = 'stop-share';
+export const SHARE_CONTROL = 'share-control';
 export const JOIN_CONTROL = 'join-meeting';
 export const LEAVE_CONTROL = 'leave-meeting';
 export const DISABLED_MUTE_AUDIO_CONTROL = 'disabled-mute-audio';
@@ -63,8 +62,8 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       display: this.muteVideoControl.bind(this),
     };
 
-    this.meetingControls[START_SHARE_CONTROL] = {
-      ID: START_SHARE_CONTROL,
+    this.meetingControls[SHARE_CONTROL] = {
+      ID: SHARE_CONTROL,
       action: this.handleLocalShare.bind(this),
       display: this.shareControl.bind(this),
     };
@@ -165,7 +164,7 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       /* eslint-enable no-confusing-arrow */
     );
 
-    const shareEvents$ = fromEvent(document, START_SHARE_CONTROL).pipe(
+    const shareEvents$ = fromEvent(document, SHARE_CONTROL).pipe(
       filter((event) => event.detail.ID === ID),
       map((event) => {
         const meeting = this.datasource[ID];
@@ -496,12 +495,12 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
         meeting.localShare.getVideoTracks()[0].onended = () => {
           // Handle browser's built-in stop Button
           meeting.localShare = null;
-          document.dispatchEvent(new CustomEvent(START_SHARE_CONTROL, {detail: meeting}));
+          document.dispatchEvent(new CustomEvent(SHARE_CONTROL, {detail: meeting}));
         };
       }
     }
 
-    document.dispatchEvent(new CustomEvent(START_SHARE_CONTROL, {detail: meeting}));
+    document.dispatchEvent(new CustomEvent(SHARE_CONTROL, {detail: meeting}));
   }
 
   /**
@@ -514,13 +513,13 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
    */
   shareControl(ID) {
     const inactive = {
-      ID: START_SHARE_CONTROL,
+      ID: SHARE_CONTROL,
       icon: 'share',
       tooltip: 'Start Sharing',
       state: MeetingControlState.INACTIVE,
     };
     const active = {
-      ID: START_SHARE_CONTROL,
+      ID: SHARE_CONTROL,
       icon: 'share',
       tooltip: 'Stop Sharing',
       state: MeetingControlState.ACTIVE,
@@ -538,24 +537,12 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       observer.complete();
     });
 
-    const muteEvent$ = fromEvent(document, START_SHARE_CONTROL).pipe(
+    const muteEvent$ = fromEvent(document, SHARE_CONTROL).pipe(
       filter((event) => event.detail.ID === ID),
       map((event) => (event.detail.localShare ? active : inactive))
     );
 
     return concat(default$, muteEvent$);
-
-    // return Observable.create((observer) => {
-    //   observer.next({
-    //     ID: START_SHARE_CONTROL,
-    //     icon: 'share',
-    //     text: 'Start Sharing Control',
-    //     tooltip: 'Start Sharing',
-    //     state: MeetingControlState.INACTIVE,
-    //   });
-
-    //   observer.complete();
-    // });
   }
 
   /**

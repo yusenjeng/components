@@ -16,6 +16,8 @@ export default function useMeeting(meetingID) {
     localVideo: null,
     remoteAudio: null,
     remoteVideo: null,
+    remoteShare: null,
+    remoteShareState: null,
     error: null,
   };
 
@@ -48,6 +50,21 @@ export default function useMeeting(meetingID) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meetingID]);
+
+  // useEffect(() => {
+  //   if (!meeting.remoteShare){
+  //     return;
+  //   }
+  //   let track = meeting.remoteShare.getVideoTracks()[0];
+
+  //   track.addEventListener("mute", event => {
+  //     console.log('remoteShare state=', 'mute');
+  //   }, false);
+
+  //   track.addEventListener("unmute", event => {
+  //     console.log('remoteShare state=', 'unmute');
+  //   }, false);
+  // }, [meeting.remoteShare]);
 
   return meeting;
 }

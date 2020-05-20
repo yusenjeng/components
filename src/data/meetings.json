@@ -131,17 +131,17 @@
     "localShare": null,
     "remoteShare": null
   },
-  "localMediaSender": {
-    "ID": "localMedia",
+  "localMediaWithSharing": {
+    "ID": "localMediaWithSharing",
     "title": "Ad Hoc Meeting Space",
     "localVideo": {
       "muted": false
     },
-    "remoteVideo": null,
+    "remoteVideo": {},
     "localAudio": {
       "muted": false
     },
-    "remoteAudio": null,
+    "remoteAudio": {},
     "localShare": null,
     "remoteShare": null
   },
@@ -161,20 +161,6 @@
     "localVideo": {},
     "remoteVideo": {},
     "localAudio": {},
-    "remoteAudio": {},
-    "localShare": null,
-    "remoteShare": null
-  },
-  "localShare": {
-    "ID": "localShare",
-    "title": "In-meeting with sharing",
-    "localVideo": {
-      "muted": false
-    },
-    "remoteVideo": {},
-    "localAudio": {
-      "muted": false
-    },
     "remoteAudio": {},
     "localShare": null,
     "remoteShare": null

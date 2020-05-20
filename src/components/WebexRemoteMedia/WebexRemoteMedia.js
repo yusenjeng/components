@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {Badge, Spinner, AlertBanner} from '@momentum-ui/react';
 
 import {WEBEX_COMPONENTS_CLASS_PREFIX} from '../../constants';
 import {useMeeting, useStream} from '../hooks';
-
 import './WebexRemoteMedia.scss';
+import {AdapterContext} from '../';
 
 /**
  * Webex Remote Media component displays the meeting's remote video
@@ -27,10 +27,43 @@ export default function WebexRemoteMedia({className, meetingID}) {
     [className]: !!className,
   };
 
-  const remoteVideoClasses = {
-    'bottom-left-cornor': !!remoteShare,
+  //
+  // To retrieve the UI state of the sharing.
+  //
+  const {meetingsAdapter} = useContext(AdapterContext);
+  const shareControl = meetingsAdapter.meetingControls['share-control'];
+  const [shareControlDisplay, setShareControlDisplay] = useState({});
+  const isShareControlInactive = shareControlDisplay.state === 'inactive';
+
+  //
+  // Switch the visibility of the remoteShare video by its readyState
+  //
+  const hideRemoteShare = () => {
+    if (!shareRef.current) {
+      return true;
+    }
+
+    return shareRef.current.readyState < 2;
   };
 
+  const remoteShareClasses = {
+    hide: hideRemoteShare(),
+  };
+
+  useEffect(() => {
+    const subscriptionShare = shareControl.display(meetingID).subscribe(setShareControlDisplay);
+
+    return () => {
+      subscriptionShare.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  //
+  // The sharing sender displays the remoteShare stream only.
+  // The sharing receiver displays both the remoteShare and the remoteVideo,
+  // which is determined by the control action and the stream from adapter.
+  //
   return (
     <div className={classNames(mainClasses)}>
       {error ? (
@@ -46,10 +79,10 @@ export default function WebexRemoteMedia({className, meetingID}) {
             </Badge>
           ) : null}
 
-          {remoteShare ? <video ref={shareRef} playsInline autoPlay /> : null}
+          {remoteVideo ? <video ref={videoRef} playsInline autoPlay /> : null}
 
-          {remoteVideo ? (
-            <video ref={videoRef} playsInline autoPlay className={classNames(remoteVideoClasses)} />
+          {remoteShare && isShareControlInactive ? (
+            <video ref={shareRef} playsInline autoPlay className={classNames(remoteShareClasses)} />
           ) : null}
 
           {remoteAudio ? <audio ref={audioRef} autoPlay /> : null}
