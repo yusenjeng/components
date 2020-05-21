@@ -27,10 +27,18 @@
     height: 100%;
     width: 100%;
 
-    &.hide {
-      visibility: hidden;
-    }
+    &.share {
+      display:none;
+
+      &.hide {
+        display:none;
+      }
   
+      &.show {
+        display:initial;
+      }
+    }
+
     &.bottom-left-cornor {
       position: absolute;
       bottom: 120px;

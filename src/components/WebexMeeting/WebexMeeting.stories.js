@@ -1,4 +1,5 @@
 import React from 'react';
+// import React, {useState, useEffect} from 'react';
 import {storiesOf} from '@storybook/react';
 
 import jsonData from '../../data';
@@ -50,7 +51,7 @@ stories.add('custom controls with sharing', () => {
 // import WebexSDKAdapter from '../../sdk-adapter';
 
 // const webex = new Webex({
-//   credentials: ''
+//   credentials: 'MGZlMDk0ODQtY2NlYS00ZGU0LTg2YzUtZmI0ODNhZDU2NmY4NzU3NDgwZDgtZDE3_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f'
 // });
 
 // const webexSDKAdapter = new WebexSDKAdapter(webex);

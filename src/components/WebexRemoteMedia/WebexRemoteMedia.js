@@ -38,16 +38,17 @@ export default function WebexRemoteMedia({className, meetingID}) {
   //
   // Switch the visibility of the remoteShare video by its readyState
   //
-  const hideRemoteShare = () => {
+  const showRemoteShare = () => {
     if (!shareRef.current) {
-      return true;
+      return false;
     }
 
-    return shareRef.current.readyState < 2;
+    return shareRef.current.readyState > 1;
   };
 
   const remoteShareClasses = {
-    hide: hideRemoteShare(),
+    share: true,
+    show: showRemoteShare(),
   };
 
   useEffect(() => {
@@ -79,10 +80,10 @@ export default function WebexRemoteMedia({className, meetingID}) {
             </Badge>
           ) : null}
 
-          {remoteVideo ? <video ref={videoRef} playsInline autoPlay /> : null}
+          {remoteVideo ? <video ref={videoRef} playsInline autoPlay name="remote-cam" /> : null}
 
           {remoteShare && isShareControlInactive ? (
-            <video ref={shareRef} playsInline autoPlay className={classNames(remoteShareClasses)} />
+            <video ref={shareRef} playsInline autoPlay name="remote-share" className={classNames(remoteShareClasses)} />
           ) : null}
 
           {remoteAudio ? <audio ref={audioRef} autoPlay /> : null}
