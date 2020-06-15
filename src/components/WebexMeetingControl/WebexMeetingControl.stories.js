@@ -63,7 +63,7 @@ stories.add('multiple icons', () => (
     <WebexMeetingControls meetingID="localMediaWithSharing">
       <WebexMeetingControl type="mute-audio" />
       <WebexMeetingControl type="mute-video" />
-      <WebexMeetingControl type="share-control" />
+      <WebexMeetingControl type="share-screen" />
     </WebexMeetingControls>
   </WebexDataProvider>
 ));

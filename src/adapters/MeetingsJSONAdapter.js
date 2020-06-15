@@ -5,7 +5,7 @@ import {MeetingsAdapter, MeetingControlState} from '@webex/component-adapter-int
 // Defined meeting controls in Meetings JSON Adapter
 export const MUTE_AUDIO_CONTROL = 'mute-audio';
 export const MUTE_VIDEO_CONTROL = 'mute-video';
-export const SHARE_CONTROL = 'share-control';
+export const SHARE_CONTROL = 'share-screen';
 export const JOIN_CONTROL = 'join-meeting';
 export const LEAVE_CONTROL = 'leave-meeting';
 export const DISABLED_MUTE_AUDIO_CONTROL = 'disabled-mute-audio';
@@ -492,8 +492,8 @@ export default class MeetingsJSONAdapter extends MeetingsAdapter {
       meeting.localShare = await this.getSharingStream(constraints);
 
       if (meeting.localShare) {
+        // Handle browser's built-in stop Button
         meeting.localShare.getVideoTracks()[0].onended = () => {
-          // Handle browser's built-in stop Button
           meeting.localShare = null;
           document.dispatchEvent(new CustomEvent(SHARE_CONTROL, {detail: meeting}));
         };

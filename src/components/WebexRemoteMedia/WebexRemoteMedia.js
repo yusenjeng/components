@@ -31,7 +31,7 @@ export default function WebexRemoteMedia({className, meetingID}) {
   // To retrieve the UI state of the sharing.
   //
   const {meetingsAdapter} = useContext(AdapterContext);
-  const shareControl = meetingsAdapter.meetingControls['share-control'];
+  const shareControl = meetingsAdapter.meetingControls['share-screen'];
   const [shareControlDisplay, setShareControlDisplay] = useState({});
   const isShareControlInactive = shareControlDisplay.state === 'inactive';
 

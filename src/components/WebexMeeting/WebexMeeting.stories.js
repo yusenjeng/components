@@ -35,7 +35,7 @@ stories.add('custom controls', () => {
 stories.add('custom controls with sharing', () => {
   const controls = (isActive) => {
     if (isActive) {
-      return ['mute-audio', 'mute-video', 'share-control', 'leave-meeting'];
+      return ['mute-audio', 'mute-video', 'share-screen', 'leave-meeting'];
     }
 
     return ['join-meeting'];
@@ -51,7 +51,7 @@ stories.add('custom controls with sharing', () => {
 // import WebexSDKAdapter from '../../sdk-adapter';
 
 // const webex = new Webex({
-//   credentials: 'MGZlMDk0ODQtY2NlYS00ZGU0LTg2YzUtZmI0ODNhZDU2NmY4NzU3NDgwZDgtZDE3_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f'
+//   credentials: 'YTVlMTA3YmQtMjMyMS00NDA5LTkwZmYtMTBiYmNiZmY5MGQ5MDVkMDFhZTktMTRj_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f'
 // });
 
 // const webexSDKAdapter = new WebexSDKAdapter(webex);
@@ -65,7 +65,7 @@ stories.add('custom controls with sharing', () => {
 
 //   const controls = (isActive) => {
 //     if (isActive) {
-//       return ['mute-audio', 'mute-video', 'share-control', 'leave-meeting'];
+//       return ['mute-audio', 'mute-video', 'share-screen', 'leave-meeting'];
 //     }
 
 //     return ['join-meeting'];
