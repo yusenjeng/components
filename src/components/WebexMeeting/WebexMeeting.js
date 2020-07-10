@@ -19,6 +19,7 @@ import './WebexMeeting.scss';
  */
 export default function WebexMeeting({meetingDestination, controls}) {
   const {ID, remoteVideo} = useMeetingDestination(meetingDestination);
+
   const isActive = remoteVideo !== null;
 
   const classBaseName = `${WEBEX_COMPONENTS_CLASS_PREFIX}-meeting`;

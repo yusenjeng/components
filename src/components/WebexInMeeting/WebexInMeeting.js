@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import {WEBEX_COMPONENTS_CLASS_PREFIX} from '../../constants';
-import {WebexLocalMedia, WebexRemoteMedia} from '../';
+import {WebexLocalMedia, WebexRemoteMedia, WebexParticipantRoster} from '../';
 import {useElementDimensions} from '../hooks';
 import {TABLET, DESKTOP} from '../breakpoints';
 
@@ -23,12 +23,14 @@ export default function WebexInMeeting({meetingID}) {
     [`${classBaseName}`]: true,
     [`${classBaseName}-tablet`]: width >= TABLET && width < DESKTOP,
     [`${classBaseName}-desktop`]: width >= DESKTOP,
+    [`${classBaseName}-sidepanel`]: true,
   };
 
   return (
     <div ref={meetingRef} className={classNames(mainClasses)}>
       <WebexRemoteMedia className="remote-media-in-meeting" meetingID={meetingID} />
       <WebexLocalMedia className="local-media-in-meeting" meetingID={meetingID} />
+      <WebexParticipantRoster className="roster-in-meeting" destination={meetingID} />
     </div>
   );
 }

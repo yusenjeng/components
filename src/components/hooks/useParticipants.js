@@ -9,26 +9,31 @@ import {AdapterContext} from '../../components/';
  * @returns {Array.<Person>} List of the person IDs from the participants
  */
 export default function useParticipants(membershipID) {
-  const [participants, setParticipants] = useState([]);
+  // const [participants, setParticipants] = useState([]);
+  const [inMeetingParticipants, setInMeetingParticipants] = useState([]);
+  const [notInMeetingParticipants, setNotInMeetingParticipants] = useState([]);
   const {membershipsAdapter} = useContext(AdapterContext);
 
   useEffect(() => {
     const onError = (error) => {
-      setParticipants([]);
+      // setParticipants([]);
 
       // eslint-disable-next-line no-console
       console.error(error.message);
     };
     const onMembers = (data) => {
-      setParticipants([...data.members]);
+      // console.log('[onMember]', data.members);
+      setInMeetingParticipants([...data.members.inMeetingMembers]);
+      setNotInMeetingParticipants([...data.members.notInMeetingMembers]);
+      // setParticipants([...data.members]);
     };
 
-    const subscription = membershipsAdapter.getMembers(membershipID).subscribe(onMembers, onError);
+    const subscription = membershipsAdapter.getMembersFromDestination(membershipID).subscribe(onMembers, onError);
 
     return () => {
       subscription.unsubscribe();
     };
   }, [membershipsAdapter, membershipID]);
 
-  return participants;
+  return [inMeetingParticipants, notInMeetingParticipants];
 }
